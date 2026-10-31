@@ -6,6 +6,7 @@ import {
     XCircle,
     CheckCircle2,
     RefreshCw,
+    Truck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,7 +36,7 @@ type PageProps = {
 
 const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; icon: React.ElementType }> = {
     pending: { label: 'Pending', variant: 'outline', icon: Clock },
-    processing: { label: 'Processing', variant: 'secondary', icon: Package },
+    processing: { label: 'Processing', variant: 'secondary', icon: Truck },
     completed: { label: 'Completed', variant: 'default', icon: CheckCircle2 },
     cancelled: { label: 'Cancelled', variant: 'destructive', icon: XCircle },
 };
@@ -71,7 +72,7 @@ export default function OrdersIndex({ orders }: PageProps) {
                         </Link>
                         <Link
                             href="/shop"
-                            className="rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground font-medium shadow-sm hover:bg-primary/90 transition-colors"
+                            className="rounded-lg bg-green-600 px-4 py-2 text-sm text-white font-medium shadow-lg shadow-green-500/25 hover:bg-green-700 transition-colors"
                         >
                             <ShoppingBag className="mr-2 h-4 w-4" />
                             Continue Shopping
@@ -124,15 +125,15 @@ export default function OrdersIndex({ orders }: PageProps) {
 
 function StatCard({ title, value, description, icon: Icon }: { title: string; value: React.ReactNode; description: string; icon: React.ElementType }) {
     return (
-        <Card className="flex flex-col gap-2 p-4">
+        <Card className="flex flex-col gap-2 p-4 border border-border/50 hover:border-green-200/50 transition-colors">
             <div className="flex items-center gap-3">
-                <div className="rounded-lg p-2 bg-muted text-muted-foreground">
+                <div className="rounded-lg p-2 bg-green-50 text-green-600">
                     <Icon className="h-4 w-4" />
                 </div>
                 <p className="text-muted-foreground text-sm">{title}</p>
             </div>
             <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-bold">{value}</span>
+                <span className="text-2xl font-bold text-foreground">{value}</span>
             </div>
             <p className="text-muted-foreground text-xs">{description}</p>
         </Card>
@@ -141,17 +142,17 @@ function StatCard({ title, value, description, icon: Icon }: { title: string; va
 
 function EmptyOrders() {
     return (
-        <Card className="text-center py-12">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground mb-4">
-                <ShoppingBag className="h-8 w-8" />
+        <Card className="text-center py-16 border border-dashed border-border/50">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-green-600 mb-6">
+                <ShoppingBag className="h-8 w-8 opacity-60" />
             </div>
-            <h3 className="text-lg font-semibold">No orders yet</h3>
+            <h3 className="text-lg font-semibold text-foreground">No orders yet</h3>
             <p className="text-muted-foreground text-sm mt-1">
                 You haven't placed any orders. Start shopping to see your order history here.
             </p>
             <Link
                 href="/shop"
-                className="mt-6 inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground font-medium shadow-sm hover:bg-primary/90 transition-colors"
+                className="mt-6 inline-flex items-center rounded-lg bg-green-600 px-4 py-2 text-sm text-white font-medium shadow-lg shadow-green-500/25 hover:bg-green-700 transition-colors"
             >
                 <ShoppingBag className="mr-2 h-4 w-4" />
                 Browse Products
@@ -165,14 +166,14 @@ function OrderCard({ order, reorder }: { order: Order; reorder: (id: number) => 
     const Icon = config.icon;
 
     return (
-        <Card className="flex flex-col overflow-hidden transition hover:shadow-md">
+        <Card className="flex flex-col overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-border/50 group">
             <CardHeader className="flex flex-row items-center justify-between gap-2 px-6 pb-3">
                 <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <div className="h-8 w-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
                         <Icon className="h-4 w-4" />
                     </div>
                     <div>
-                        <CardTitle className="text-sm">Order #{order.id}</CardTitle>
+                        <CardTitle className="text-sm font-semibold">{order.id}</CardTitle>
                         <p className="text-xs text-muted-foreground">
                             {new Date(order.created_at).toLocaleDateString(undefined, {
                                 month: 'short',
@@ -194,7 +195,7 @@ function OrderCard({ order, reorder }: { order: Order; reorder: (id: number) => 
                             key={item.id}
                             className="flex items-center gap-3 border-b border-border/60 pb-3 last:border-b-0"
                         >
-                            <div className="h-12 w-12 rounded-lg border bg-muted flex items-center justify-center overflow-hidden">
+                            <div className="h-12 w-12 rounded-lg border border-border/50 bg-muted flex items-center justify-center overflow-hidden">
                                 {item.product?.image ? (
                                     <img
                                         src={item.product.image}
@@ -237,6 +238,7 @@ function OrderCard({ order, reorder }: { order: Order; reorder: (id: number) => 
                         variant="outline"
                         onClick={() => reorder(order.id)}
                         disabled={order.status === 'cancelled'}
+                        className="border-green-200 text-green-700 hover:bg-green-50 disabled:opacity-50"
                     >
                         <RefreshCw className="mr-2 h-3 w-3" />
                         Reorder

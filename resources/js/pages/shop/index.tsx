@@ -1,12 +1,12 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Search, Filter, ShoppingBag, Plus, ArrowRight, ChevronLeft, ChevronRight, Package } from 'lucide-react';
+import { Search, Filter, ShoppingBag, Plus, ArrowRight, ChevronLeft, ChevronRight, Package, Leaf } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { index as shopIndex, show as shopShow } from '@/routes/shop';
+import { index as shopIndex } from '@/routes/shop';
 import { store as cartStore } from '@/routes/cart';
 
 type Product = {
@@ -50,19 +50,19 @@ export default function ShopIndex({ products, categories, filters }: PageProps) 
 
     return (
         <>
-            <Head title="Shop" />
+            <Head title="Shop - FreshMart" />
 
-            <div className="max-w-7xl mx-auto p-6 space-y-8">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="max-w-7xl mx-auto p-6 space-y-10">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Fresh Produce</h1>
-                        <p className="text-muted-foreground">
-                            Browse our selection of farm-fresh fruits and vegetables.
+                        <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2">Fresh Produce</h1>
+                        <p className="text-muted-foreground text-lg">
+                            Farm-fresh fruits and vegetables, hand-picked and delivered to your door.
                         </p>
                     </div>
                     <Link
                         href="/cart"
-                        className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground font-medium shadow-sm hover:bg-primary/90 transition-colors"
+                        className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm text-primary-foreground font-medium shadow-sm hover:bg-primary/90 transition-colors"
                     >
                         <ShoppingBag className="h-4 w-4" />
                         View Cart
@@ -70,21 +70,21 @@ export default function ShopIndex({ products, categories, filters }: PageProps) 
                 </div>
 
                 {/* Search & filters */}
-                <Card className="p-4">
+                <Card className="p-6">
                     <CardHeader className="px-0 py-0 flex flex-col sm:flex-row sm:items-center gap-4">
                         <div className="flex-1">
                             <Label htmlFor="search" className="sr-only">
                                 Search products
                             </Label>
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                 <Input
                                     id="search"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && router.get(shopIndex(), query, { preserveScroll: true })}
                                     placeholder="Search fruits & vegetables..."
-                                    className="pl-10"
+                                    className="pl-12"
                                 />
                             </div>
                         </div>
@@ -97,15 +97,15 @@ export default function ShopIndex({ products, categories, filters }: PageProps) 
                         </Button>
                     </CardHeader>
 
-                    <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
+                    <div className="mt-6 flex gap-2 overflow-x-auto pb-2">
                         <button
                             onClick={() => {
                                 setActiveCategory('');
                                 router.get(shopIndex(), { ...query, category: undefined, page: 1 }, { preserveScroll: true });
                             }}
-                            className={`whitespace-nowrap px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                            className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                                 !activeCategory
-                                    ? 'bg-primary text-primary-foreground shadow-sm'
+                                    ? 'bg-green-50 text-green-700 border border-green-100 shadow-sm'
                                     : 'border border-input bg-background hover:bg-accent'
                             }`}
                         >
@@ -118,9 +118,9 @@ export default function ShopIndex({ products, categories, filters }: PageProps) 
                                     setActiveCategory(c.slug);
                                     router.get(shopIndex(), { ...query, category: c.slug, page: 1 }, { preserveScroll: true });
                                 }}
-                                className={`whitespace-nowrap px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                                className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                                     activeCategory === c.slug
-                                        ? 'bg-primary text-primary-foreground shadow-sm'
+                                        ? 'bg-green-50 text-green-700 border border-green-100 shadow-sm'
                                         : 'border border-input bg-background hover:bg-accent'
                                 }`}
                             >
@@ -133,11 +133,11 @@ export default function ShopIndex({ products, categories, filters }: PageProps) 
                 {/* Results info */}
                 <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <p>
-                        Showing <span className="font-medium">{products.from}</span> to{' '}
-                        <span className="font-medium">{products.to}</span> of{' '}
-                        <span className="font-medium">{products.total}</span> results
+                        Showing <span className="font-medium text-foreground">{products.from}</span> to{' '}
+                        <span className="font-medium text-foreground">{products.to}</span> of{' '}
+                        <span className="font-medium text-foreground">{products.total}</span> results
                     </p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         {products.current_page > 1 && (
                             <Button
                                 variant="outline"
@@ -147,7 +147,7 @@ export default function ShopIndex({ products, categories, filters }: PageProps) 
                                 <ChevronLeft className="h-4 w-4" /> Prev
                             </Button>
                         )}
-                        <span className="px-2">
+                        <span className="px-3">
                             Page {products.current_page} of {products.last_page}
                         </span>
                         {products.current_page < products.last_page && (
@@ -166,7 +166,7 @@ export default function ShopIndex({ products, categories, filters }: PageProps) 
                 {products.data.length === 0 ? (
                     <EmptyState />
                 ) : (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {products.data.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
@@ -182,7 +182,7 @@ function ProductCard({ product }: { product: Product }) {
     const isOutOfStock = product.stock === 0;
 
     return (
-        <Card className="flex flex-col overflow-hidden hover:shadow-md transition-shadow group">
+        <Card className="flex flex-col overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-border/50 group">
             <div className="relative aspect-[4/5] overflow-hidden bg-muted">
                 {product.image ? (
                     <img
@@ -196,51 +196,51 @@ function ProductCard({ product }: { product: Product }) {
                     </div>
                 )}
                 {isOutOfStock && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
                         <Badge variant="destructive" className="uppercase text-xs font-bold">
                             Out of Stock
                         </Badge>
                     </div>
                 )}
                 {isLowStock && !isOutOfStock && (
-                    <div className="absolute top-2 right-2">
-                        <Badge variant="outline" className="uppercase text-xs">
+                    <div className="absolute top-3 right-3 z-20">
+                        <Badge variant="outline" className="uppercase text-xs border-green-200 text-green-700 bg-green-50">
                             Low Stock ({product.stock})
                         </Badge>
                     </div>
                 )}
-            </div>
-
-            <CardContent className="px-4 pb-3">
-                <Badge variant="outline" className="mr-2">
+                <Badge variant="outline" className="absolute top-3 left-3 z-20 bg-white/90 backdrop-blur border-white/50">
                     {product.category?.name ?? 'General'}
                 </Badge>
-                <CardTitle className="text-base line-clamp-1">{product.name}</CardTitle>
-                <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+            </div>
+
+            <CardContent className="px-5 pb-4">
+                <CardTitle className="text-base font-semibold line-clamp-1">{product.name}</CardTitle>
+                <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
                     {product.description}
                 </p>
-                <div className="mt-3 flex items-baseline gap-2">
-                    <span className="text-xl font-bold">${Number(product.price).toFixed(2)}</span>
+                <div className="mt-4 flex items-baseline gap-1">
+                    <span className="text-xl font-bold text-foreground">${Number(product.price).toFixed(2)}</span>
                     <span className="text-xs text-muted-foreground">/{product.unit}</span>
                 </div>
             </CardContent>
 
-            <CardFooter className="px-4 pt-0">
+            <CardFooter className="px-5 pt-0">
                 {isOutOfStock ? (
                     <Button variant="outline" className="w-full" disabled>
                         Out of Stock
                     </Button>
                 ) : (
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-3">
                         <Link
-                            href={shopShow({ product: product.id })}
-                            className="flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors hover:bg-accent"
+                            href={`/shop/${product.id}`}
+                            className="flex items-center justify-center gap-2 rounded-lg border border-input bg-background px-3 py-2.5 text-sm font-medium transition-colors hover:bg-accent hover:text-primary"
                         >
                             View <ArrowRight className="h-3 w-3" />
                         </Link>
                         <button
                             onClick={() => router.post(cartStore(), { product_id: product.id, quantity: 1 })}
-                            className="rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground font-medium shadow-sm hover:bg-primary/90 transition-colors"
+                            className="rounded-lg bg-green-600 px-3 py-2.5 text-xs text-white font-medium shadow-sm hover:bg-green-700 transition-colors disabled:opacity-50"
                         >
                             <Plus className="h-3 w-3" /> Add
                         </button>
@@ -253,12 +253,12 @@ function ProductCard({ product }: { product: Product }) {
 
 function EmptyState() {
     return (
-        <Card className="text-center py-16">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground mb-4">
-                <Search className="h-8 w-8 opacity-50" />
+        <Card className="text-center py-20 border border-dashed">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-green-600 mb-6">
+                <Search className="h-8 w-8 opacity-60" />
             </div>
-            <h3 className="text-lg font-semibold">No products found</h3>
-            <p className="text-muted-foreground text-sm mt-1">
+            <h3 className="text-lg font-semibold text-foreground">No products found</h3>
+            <p className="text-muted-foreground text-sm mt-2">
                 Try adjusting your search or filters.
             </p>
         </Card>
