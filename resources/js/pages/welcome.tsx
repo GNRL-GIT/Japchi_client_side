@@ -4,7 +4,7 @@ import {
     ArrowRight,
     Truck,
     Leaf,
-    DollarSign,
+    PhilippinePeso,
     Clock,
     MapPin,
     Phone,
@@ -33,7 +33,7 @@ export default function Welcome() {
             description: 'Quick and reliable delivery to your doorstep.',
         },
         {
-            icon: DollarSign,
+            icon: PhilippinePeso,
             title: 'Best Prices',
             description: 'Competitive prices on all your favorite items.',
         },
@@ -158,7 +158,7 @@ export default function Welcome() {
                                     <Leaf className="h-5 w-5" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-medium text-foreground">$2.50/kg</p>
+                                    <p className="text-sm font-medium text-foreground">₱2.50/kg</p>
                                     <p className="text-xs text-muted-foreground">Organic Apples</p>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@ export default function Welcome() {
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium text-foreground">Free Delivery</p>
-                                    <p className="text-xs text-muted-foreground">Orders over $50</p>
+                                    <p className="text-xs text-muted-foreground">Orders over ₱50</p>
                                 </div>
                             </div>
                         </div>
@@ -182,7 +182,7 @@ export default function Welcome() {
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                             <Truck className="h-4 w-4" />
-                            Free delivery on orders over $50
+                            Free delivery on orders over ₱50
                         </div>
                         <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                             <Leaf className="h-4 w-4" />
@@ -253,10 +253,10 @@ export default function Welcome() {
 
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {[
-                            { id: 1, name: 'Organic Apples', price: '$2.50', unit: 'kg', stock: 100, category: 'Fruits', image: null },
-                            { id: 2, name: 'Fresh Bananas', price: '$0.80', unit: 'kg', stock: 150, category: 'Fruits', image: null },
-                            { id: 3, name: 'Carrots', price: '$1.20', unit: 'kg', stock: 120, category: 'Vegetables', image: null },
-                            { id: 4, name: 'Broccoli', price: '$2.50', unit: 'kg', stock: 50, category: 'Vegetables', image: null },
+                            { id: 1, name: 'Organic Apples', price: '₱2.50', unit: 'kg', stock: 100, category: 'Fruits', image: null },
+                            { id: 2, name: 'Fresh Bananas', price: '₱0.80', unit: 'kg', stock: 150, category: 'Fruits', image: null },
+                            { id: 3, name: 'Carrots', price: '₱1.20', unit: 'kg', stock: 120, category: 'Vegetables', image: null },
+                            { id: 4, name: 'Broccoli', price: '₱2.50', unit: 'kg', stock: 50, category: 'Vegetables', image: null },
                         ].map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}

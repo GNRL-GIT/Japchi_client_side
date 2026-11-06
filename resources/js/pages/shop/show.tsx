@@ -84,7 +84,7 @@ export default function ShopShow({ product }: PageProps) {
 
                         <div className="p-6 rounded-xl bg-green-50 border border-green-100">
                             <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-bold text-green-700">${Number(product.price).toFixed(2)}</span>
+                                <span className="text-4xl font-bold text-green-700">₱{Number().toFixed(2)}</span>
                                 <span className="text-sm text-muted-foreground">/{product.unit}</span>
                             </div>
                             <p className="mt-3 text-sm text-muted-foreground">

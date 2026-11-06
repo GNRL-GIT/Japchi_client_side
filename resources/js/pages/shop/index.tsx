@@ -254,7 +254,7 @@ function ProductCard({ product }: { product: Product }) {
                 </p>
                 <div className="mt-4 flex items-baseline gap-1">
                     <span className="text-xl font-bold text-foreground">
-                        ${Number(product.price).toFixed(2)}
+                        ₱{Number().toFixed(2)}
                     </span>
                     <span className="text-xs text-muted-foreground">
                         /{product.unit}

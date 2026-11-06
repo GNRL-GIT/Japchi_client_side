@@ -52,7 +52,7 @@ export default function AdminProducts({ products }: any) {
                             {products.map((p: any) => (
                                 <tr key={p.id} className="border-t hover:bg-muted/30 transition">
                                     <td className="p-3 text-sm">{p.name}</td>
-                                    <td className="p-3 text-sm">${p.price}</td>
+                                    <td className="p-3 text-sm">₱{Number(p.price).toFixed(2)}</td>
                                     <td className="p-3 text-sm">{p.stock}</td>
                                     <td className="p-3 text-sm">{p.is_active ? 'Yes' : 'No'}</td>
                                     <td className="p-3 text-sm flex gap-3">

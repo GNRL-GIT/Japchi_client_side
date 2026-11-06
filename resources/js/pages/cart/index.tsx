@@ -70,7 +70,7 @@ export default function CartIndex({ cart }: PageProps) {
                                             <div className="col-span-4">
                                                 <p className="font-medium text-foreground">{item.product.name}</p>
                                                 <p className="text-sm text-muted-foreground">
-                                                    ${Number(item.product.price).toFixed(2)}
+                                                    ₱{Number(item.product.price).toFixed(2)}
                                                 </p>
                                             </div>
                                             <div className="col-span-3 flex items-center gap-2">
@@ -104,7 +104,7 @@ export default function CartIndex({ cart }: PageProps) {
                                             </div>
                                             <div className="col-span-2 text-right">
                                                 <p className="font-medium text-foreground">
-                                                    ${(Number(item.product.price) * item.quantity).toFixed(2)}
+                                                    ₱{(Number(item.product.price) * item.quantity).toFixed(2)}
                                                 </p>
                                                 <button
                                                     onClick={() => router.delete(cartDestroy({ cartItem: item.id }))}
@@ -123,7 +123,7 @@ export default function CartIndex({ cart }: PageProps) {
                         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-t border-border pt-6">
                             <div>
                                 <p className="text-sm text-muted-foreground">Order Total</p>
-                                <p className="text-3xl font-bold text-foreground">${total.toFixed(2)}</p>
+                                <p className="text-3xl font-bold text-foreground">₱{total.toFixed(2)}</p>
                             </div>
                             <Link
                                 href="/checkout"

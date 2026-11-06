@@ -27,7 +27,7 @@ export default function AdminOrders({ orders }: any) {
                                 <tr key={o.id} className="border-t hover:bg-muted/30 transition">
                                     <td className="p-3 text-sm">{o.id}</td>
                                     <td className="p-3 text-sm">{o.user?.email}</td>
-                                    <td className="p-3 text-sm">${o.total}</td>
+                                    <td className="p-3 text-sm">₱{Number(o.total).toFixed(2)}</td>
                                     <td className="p-3 text-sm capitalize">{o.status}</td>
                                     <td className="p-3 text-sm">
                                         <select defaultValue={o.status} onChange={e=>update(o.id,e.target.value)} className="border rounded-lg p-1.5 bg-background">

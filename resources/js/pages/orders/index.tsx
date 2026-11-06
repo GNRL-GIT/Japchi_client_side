@@ -90,7 +90,7 @@ export default function OrdersIndex({ orders }: PageProps) {
                     />
                     <StatCard
                         title="Total Spent"
-                        value={`$${totalSpent.toFixed(2)}`}
+                        value={`₱${totalSpent.toFixed(2)}`}
                         icon={CreditCardIcon}
                         description="Completed orders"
                     />
@@ -215,7 +215,7 @@ function OrderCard({ order, reorder }: { order: Order; reorder: (id: number) => 
                                 </p>
                             </div>
                             <span className="text-sm font-medium text-right">
-                                ${(item.price * item.quantity).toFixed(2)}
+                                ₱{(item.price * item.quantity).toFixed(2)}
                             </span>
                         </div>
                     ))}
@@ -228,7 +228,7 @@ function OrderCard({ order, reorder }: { order: Order; reorder: (id: number) => 
                     </div>
                     <div className="flex flex-col items-end gap-1">
                         <p className="text-muted-foreground">Total</p>
-                        <p className="font-bold">${Number(order.total).toFixed(2)}</p>
+                        <p className="font-bold">₱{Number(order.total).toFixed(2)}</p>
                     </div>
                 </div>
 
