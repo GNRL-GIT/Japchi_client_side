@@ -53,7 +53,7 @@ export default function Welcome() {
 
     return (
         <>
-            <Head title="FreshMart - Fresh Fruits & Vegetables" />
+            <Head title="Japchi" />
 
             {/* Navigation */}
             <nav className="fixed top-0 w-full z-50 border-b border-border bg-background/80 backdrop-blur-md">
@@ -65,7 +65,7 @@ export default function Welcome() {
                         <div className="rounded-lg bg-primary p-2 flex items-center justify-center">
                             <Leaf className="h-5 w-5 text-primary-foreground" />
                         </div>
-                        <span className="text-foreground">FreshMart</span>
+                        <span className="text-foreground">JAPCHI</span>
                     </Link>
                     <div className="hidden md:flex items-center gap-6 text-sm font-medium text-foreground">
                         <Link
@@ -130,7 +130,7 @@ export default function Welcome() {
                                     asChild
                                 >
                                     <Link href="/shop">
-                                        Shop Now <ArrowRight className="h-4 w-4" />
+                                        Order Now <ArrowRight className="h-4 w-4" />
                                     </Link>
                                 </Button>
                                 <Button variant="outline" size="lg" className="px-8 py-3 text-lg">

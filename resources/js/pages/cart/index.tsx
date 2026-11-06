@@ -46,11 +46,11 @@ export default function CartIndex({ cart }: PageProps) {
                     <EmptyCart />
                 ) : (
                     <>
-                        <Card className="overflow-hidden">
+                        <Card className="overflow-hidden ">
                             <CardHeader className="px-6 py-4">
                                 <CardTitle className="text-sm font-semibold tracking-tighter uppercase">Items</CardTitle>
                             </CardHeader>
-                            <CardContent className="p-0">
+                            <CardContent className="p-4">
                                 <div className="divide-y divide-border">
                                     {items.map((item) => (
                                         <div key={item.id} className="grid grid-cols-12 gap-4 items-center px-6 py-4">

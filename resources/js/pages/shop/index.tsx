@@ -1,11 +1,16 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Search, Filter, ShoppingBag, Plus, ArrowRight, ChevronLeft, ChevronRight, Package, Leaf } from 'lucide-react';
+import {
+    Search,
+    Plus,
+    ArrowRight,
+    ChevronLeft,
+    ChevronRight,
+    Package,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { index as shopIndex } from '@/routes/shop';
 import { store as cartStore } from '@/routes/cart';
 
@@ -38,74 +43,55 @@ type PageProps = {
     filters: { search?: string; category?: string };
 };
 
-export default function ShopIndex({ products, categories, filters }: PageProps) {
-    const [search, setSearch] = useState(filters.search ?? '');
-    const [activeCategory, setActiveCategory] = useState(filters.category ?? '');
+export default function ShopIndex({
+    products,
+    categories,
+    filters,
+}: PageProps) {
+    const [activeCategory, setActiveCategory] = useState(
+        filters.category ?? '',
+    );
 
     const query = {
-        search,
+        search: filters.search || undefined,
         category: activeCategory || undefined,
         page: 1,
     };
 
     return (
         <>
-            <Head title="Shop - FreshMart" />
+            <Head title="Shop - Japchi" />
 
-            <div className="max-w-7xl mx-auto p-6 space-y-10">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                    <div>
-                        <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2">Fresh Produce</h1>
-                        <p className="text-muted-foreground text-lg">
-                            Farm-fresh fruits and vegetables, hand-picked and delivered to your door.
-                        </p>
-                    </div>
-                    <Link
-                        href="/cart"
-                        className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm text-primary-foreground font-medium shadow-sm hover:bg-primary/90 transition-colors"
-                    >
-                        <ShoppingBag className="h-4 w-4" />
-                        View Cart
-                    </Link>
+            <div className="mx-auto max-w-7xl space-y-10 p-6">
+                <div>
+                    <h1 className="mb-2 text-4xl font-bold tracking-tight text-foreground">
+                        Fresh Produce
+                    </h1>
+                    <p className="text-lg text-muted-foreground">
+                        Farm-fresh fruits and vegetables, hand-picked and
+                        delivered to your door.
+                    </p>
                 </div>
 
-                {/* Search & filters */}
+                {/* Category filters */}
                 <Card className="p-6">
-                    <CardHeader className="px-0 py-0 flex flex-col sm:flex-row sm:items-center gap-4">
-                        <div className="flex-1">
-                            <Label htmlFor="search" className="sr-only">
-                                Search products
-                            </Label>
-                            <div className="relative">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input
-                                    id="search"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && router.get(shopIndex(), query, { preserveScroll: true })}
-                                    placeholder="Search fruits & vegetables..."
-                                    className="pl-12"
-                                />
-                            </div>
-                        </div>
-                        <Button
-                            onClick={() => router.get(shopIndex(), { ...query, page: 1 }, { preserveScroll: true })}
-                            className="w-auto"
-                        >
-                            <Filter className="mr-2 h-4 w-4" />
-                            Apply Filters
-                        </Button>
-                    </CardHeader>
-
-                    <div className="mt-6 flex gap-2 overflow-x-auto pb-2">
+                    <div className="flex gap-2 overflow-x-auto pb-2">
                         <button
                             onClick={() => {
                                 setActiveCategory('');
-                                router.get(shopIndex(), { ...query, category: undefined, page: 1 }, { preserveScroll: true });
+                                router.get(
+                                    shopIndex(),
+                                    {
+                                        search: filters.search || undefined,
+                                        category: undefined,
+                                        page: 1,
+                                    },
+                                    { preserveScroll: true },
+                                );
                             }}
-                            className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                            className={`rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
                                 !activeCategory
-                                    ? 'bg-green-50 text-green-700 border border-green-100 shadow-sm'
+                                    ? 'border border-green-100 bg-green-50 text-green-700 shadow-sm'
                                     : 'border border-input bg-background hover:bg-accent'
                             }`}
                         >
@@ -116,11 +102,19 @@ export default function ShopIndex({ products, categories, filters }: PageProps) 
                                 key={c.id}
                                 onClick={() => {
                                     setActiveCategory(c.slug);
-                                    router.get(shopIndex(), { ...query, category: c.slug, page: 1 }, { preserveScroll: true });
+                                    router.get(
+                                        shopIndex(),
+                                        {
+                                            search: filters.search || undefined,
+                                            category: c.slug,
+                                            page: 1,
+                                        },
+                                        { preserveScroll: true },
+                                    );
                                 }}
-                                className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                                className={`rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
                                     activeCategory === c.slug
-                                        ? 'bg-green-50 text-green-700 border border-green-100 shadow-sm'
+                                        ? 'border border-green-100 bg-green-50 text-green-700 shadow-sm'
                                         : 'border border-input bg-background hover:bg-accent'
                                 }`}
                             >
@@ -133,16 +127,35 @@ export default function ShopIndex({ products, categories, filters }: PageProps) 
                 {/* Results info */}
                 <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <p>
-                        Showing <span className="font-medium text-foreground">{products.from}</span> to{' '}
-                        <span className="font-medium text-foreground">{products.to}</span> of{' '}
-                        <span className="font-medium text-foreground">{products.total}</span> results
+                        Showing{' '}
+                        <span className="font-medium text-foreground">
+                            {products.from}
+                        </span>{' '}
+                        to{' '}
+                        <span className="font-medium text-foreground">
+                            {products.to}
+                        </span>{' '}
+                        of{' '}
+                        <span className="font-medium text-foreground">
+                            {products.total}
+                        </span>{' '}
+                        results
                     </p>
                     <div className="flex items-center gap-3">
                         {products.current_page > 1 && (
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => router.get(shopIndex(), { ...query, page: products.current_page - 1 }, { preserveScroll: true })}
+                                onClick={() =>
+                                    router.get(
+                                        shopIndex(),
+                                        {
+                                            ...query,
+                                            page: products.current_page - 1,
+                                        },
+                                        { preserveScroll: true },
+                                    )
+                                }
                             >
                                 <ChevronLeft className="h-4 w-4" /> Prev
                             </Button>
@@ -154,7 +167,16 @@ export default function ShopIndex({ products, categories, filters }: PageProps) 
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => router.get(shopIndex(), { ...query, page: products.current_page + 1 }, { preserveScroll: true })}
+                                onClick={() =>
+                                    router.get(
+                                        shopIndex(),
+                                        {
+                                            ...query,
+                                            page: products.current_page + 1,
+                                        },
+                                        { preserveScroll: true },
+                                    )
+                                }
                             >
                                 Next <ChevronRight className="h-4 w-4" />
                             </Button>
@@ -182,46 +204,61 @@ function ProductCard({ product }: { product: Product }) {
     const isOutOfStock = product.stock === 0;
 
     return (
-        <Card className="flex flex-col overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-border/50 group">
+        <Card className="group flex flex-col overflow-hidden border border-border/50 transition-shadow duration-300 hover:shadow-xl">
             <div className="relative aspect-[4/5] overflow-hidden bg-muted">
                 {product.image ? (
                     <img
                         src={product.image}
                         alt={product.name}
-                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                 ) : (
-                    <div className="h-full w-full flex items-center justify-center text-muted-foreground">
+                    <div className="flex h-full w-full items-center justify-center text-muted-foreground">
                         <Package className="h-10 w-10 opacity-50" />
                     </div>
                 )}
                 {isOutOfStock && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
-                        <Badge variant="destructive" className="uppercase text-xs font-bold">
+                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40">
+                        <Badge
+                            variant="destructive"
+                            className="text-xs font-bold uppercase"
+                        >
                             Out of Stock
                         </Badge>
                     </div>
                 )}
                 {isLowStock && !isOutOfStock && (
                     <div className="absolute top-3 right-3 z-20">
-                        <Badge variant="outline" className="uppercase text-xs border-green-200 text-green-700 bg-green-50">
+                        <Badge
+                            variant="outline"
+                            className="border-green-200 bg-green-50 text-xs text-green-700 uppercase"
+                        >
                             Low Stock ({product.stock})
                         </Badge>
                     </div>
                 )}
-                <Badge variant="outline" className="absolute top-3 left-3 z-20 bg-white/90 backdrop-blur border-white/50">
+                <Badge
+                    variant="outline"
+                    className="absolute top-3 left-3 z-20 border-white/50 bg-white/90 backdrop-blur"
+                >
                     {product.category?.name ?? 'General'}
                 </Badge>
             </div>
 
             <CardContent className="px-5 pb-4">
-                <CardTitle className="text-base font-semibold line-clamp-1">{product.name}</CardTitle>
-                <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
+                <CardTitle className="line-clamp-1 text-base font-semibold">
+                    {product.name}
+                </CardTitle>
+                <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
                     {product.description}
                 </p>
                 <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-xl font-bold text-foreground">${Number(product.price).toFixed(2)}</span>
-                    <span className="text-xs text-muted-foreground">/{product.unit}</span>
+                    <span className="text-xl font-bold text-foreground">
+                        ${Number(product.price).toFixed(2)}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                        /{product.unit}
+                    </span>
                 </div>
             </CardContent>
 
@@ -239,8 +276,13 @@ function ProductCard({ product }: { product: Product }) {
                             View <ArrowRight className="h-3 w-3" />
                         </Link>
                         <button
-                            onClick={() => router.post(cartStore(), { product_id: product.id, quantity: 1 })}
-                            className="rounded-lg bg-green-600 px-3 py-2.5 text-xs text-white font-medium shadow-sm hover:bg-green-700 transition-colors disabled:opacity-50"
+                            onClick={() =>
+                                router.post(cartStore(), {
+                                    product_id: product.id,
+                                    quantity: 1,
+                                })
+                            }
+                            className="rounded-lg bg-green-600 px-3 py-2.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-green-700 disabled:opacity-50"
                         >
                             <Plus className="h-3 w-3" /> Add
                         </button>
@@ -253,12 +295,14 @@ function ProductCard({ product }: { product: Product }) {
 
 function EmptyState() {
     return (
-        <Card className="text-center py-20 border border-dashed">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-green-600 mb-6">
+        <Card className="border border-dashed py-20 text-center">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-green-600">
                 <Search className="h-8 w-8 opacity-60" />
             </div>
-            <h3 className="text-lg font-semibold text-foreground">No products found</h3>
-            <p className="text-muted-foreground text-sm mt-2">
+            <h3 className="text-lg font-semibold text-foreground">
+                No products found
+            </h3>
+            <p className="mt-2 text-sm text-muted-foreground">
                 Try adjusting your search or filters.
             </p>
         </Card>
