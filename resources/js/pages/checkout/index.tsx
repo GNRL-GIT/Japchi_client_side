@@ -11,7 +11,7 @@ export default function Checkout() {
 
     return (
         <>
-            <Head title="Checkout - FreshMart" />
+            <Head title="Checkout - Japchi" />
 
             <div className="max-w-3xl mx-auto p-6 space-y-8">
                 <div className="flex items-center gap-3">
@@ -41,7 +41,7 @@ export default function Checkout() {
                                             id="shipping_address"
                                             value={address}
                                             onChange={(e) => setAddress(e.target.value)}
-                                            placeholder="e.g. 123 Farm Road, Freshville"
+                                            placeholder="e.g. 123 Ramen Street, Barangay Sample"
                                             className="mt-1 block w-full"
                                             required
                                         />
@@ -111,8 +111,8 @@ export default function Checkout() {
                                             <div className="h-5 w-5 rounded-full bg-green-600 flex items-center justify-center text-[10px] text-white">✓</div>
                                         </div>
                                         <div>
-                                            <p className="font-medium text-foreground">Fresh Guarantee</p>
-                                            <p className="text-xs text-muted-foreground">100% farm-fresh produce, hand-picked daily</p>
+                                            <p className="font-medium text-foreground">Freshly Prepared</p>
+                                            <p className="text-xs text-muted-foreground">Your ramen, dimsum, and drinks are prepared fresh for every order</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">

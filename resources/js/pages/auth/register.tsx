@@ -24,7 +24,7 @@ type Props = {
 export default function Register({ passwordRules }: Props) {
     return (
         <>
-            <Head title="Create account - FreshMart" />
+            <Head title="Create account - Japchi" />
 
             <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-muted/50 px-6 py-12  ">
                 <Card className="w-full max-w-md p-4">
@@ -34,7 +34,7 @@ export default function Register({ passwordRules }: Props) {
                         </div>
                         <CardTitle className="text-3xl font-bold tracking-tight">Create an account</CardTitle>
                         <CardDescription>
-                            Join FreshMart and start shopping for fresh produce today.
+                            Join Japchi and order your favorite ramen, dimsum, and drinks.
                         </CardDescription>
                     </CardHeader>
 

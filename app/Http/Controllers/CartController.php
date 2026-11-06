@@ -17,8 +17,22 @@ class CartController extends Controller
 
     public function index(Request $request)
     {
-        $cart = $this->cart($request)->load('items.product');
-        return Inertia::render('cart/index', ['cart' => $cart]);
+        $cart = $this->cart($request);
+        $search = $request->string('search')->trim()->toString();
+        $query = $cart->items()->with('product');
+
+        if ($search !== '') {
+            $query->whereHas('product', function ($productQuery) use ($search) {
+                $productQuery->where('name', 'like', "%{$search}%");
+            });
+        }
+
+        $cart->setRelation('items', $query->get());
+
+        return Inertia::render('cart/index', [
+            'cart' => $cart,
+            'filters' => ['search' => $search !== '' ? $search : null],
+        ]);
     }
 
     public function store(Request $request)

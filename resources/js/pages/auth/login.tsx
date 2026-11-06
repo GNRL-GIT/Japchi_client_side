@@ -33,7 +33,7 @@ type Props = {
 export default function Login({ status, canResetPassword }: Props) {
     return (
         <>
-            <Head title="Log in - FreshMart" />
+            <Head title="Log in - Japchi" />
 
             {/* @chisel-passkeys */}
             <PasskeyVerify />

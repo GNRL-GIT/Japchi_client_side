@@ -65,11 +65,11 @@ export default function ShopIndex({
             <div className="mx-auto max-w-7xl space-y-10 p-6">
                 <div>
                     <h1 className="mb-2 text-4xl font-bold tracking-tight text-foreground">
-                        Fresh Produce
+                        Our Menu
                     </h1>
                     <p className="text-lg text-muted-foreground">
-                        Farm-fresh fruits and vegetables, hand-picked and
-                        delivered to your door.
+                        Hot ramen, freshly made dimsum, and refreshing drinks,
+                        prepared and served with care.
                     </p>
                 </div>
 
@@ -237,12 +237,6 @@ function ProductCard({ product }: { product: Product }) {
                         </Badge>
                     </div>
                 )}
-                <Badge
-                    variant="outline"
-                    className="absolute top-3 left-3 z-20 border-white/50 bg-white/90 backdrop-blur"
-                >
-                    {product.category?.name ?? 'General'}
-                </Badge>
             </div>
 
             <CardContent className="px-5 pb-4">
@@ -254,7 +248,7 @@ function ProductCard({ product }: { product: Product }) {
                 </p>
                 <div className="mt-4 flex items-baseline gap-1">
                     <span className="text-xl font-bold text-foreground">
-                        ₱{Number().toFixed(2)}
+                        ₱{Number(product.price).toFixed(2)}
                     </span>
                     <span className="text-xs text-muted-foreground">
                         /{product.unit}

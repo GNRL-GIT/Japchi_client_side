@@ -12,8 +12,25 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $orders = Order::with('items.product')->where('user_id', $request->user()->id)->latest()->get();
-        return Inertia::render('orders/index', ['orders' => $orders]);
+        $search = $request->string('search')->trim()->toString();
+        $query = Order::where('user_id', $request->user()->id)->latest();
+
+        if ($search !== '') {
+            $query->whereHas('items.product', function ($productQuery) use ($search) {
+                $productQuery->where('name', 'like', "%{$search}%");
+            })->with(['items' => function ($itemsQuery) use ($search) {
+                $itemsQuery->whereHas('product', function ($productQuery) use ($search) {
+                    $productQuery->where('name', 'like', "%{$search}%");
+                })->with('product');
+            }]);
+        } else {
+            $query->with('items.product');
+        }
+
+        return Inertia::render('orders/index', [
+            'orders' => $query->get(),
+            'filters' => ['search' => $search !== '' ? $search : null],
+        ]);
     }
 
     public function store(Request $request)

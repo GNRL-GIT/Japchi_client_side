@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { index as cartIndex } from '@/routes/cart';
+import { index as ordersIndex } from '@/routes/orders';
 import { index as shopIndex } from '@/routes/shop';
 import type { BreadcrumbItem as BreadcrumbItemType } from '@/types';
 
@@ -19,6 +20,8 @@ export function AppSidebarHeader({
     breadcrumbs?: BreadcrumbItemType[];
 }) {
     const page = usePage<PageProps>();
+    const isCartPage = page.component === 'cart/index';
+    const isOrdersPage = page.component === 'orders/index';
     const currentSearch = page.props.filters?.search ?? '';
     const [search, setSearch] = useState(currentSearch);
 
@@ -27,6 +30,24 @@ export function AppSidebarHeader({
     }, [currentSearch]);
 
     const submitSearch = () => {
+        if (isCartPage) {
+            router.get(
+                cartIndex(),
+                { search: search || undefined },
+                { preserveScroll: true, preserveState: true },
+            );
+            return;
+        }
+
+        if (isOrdersPage) {
+            router.get(
+                ordersIndex(),
+                { search: search || undefined },
+                { preserveScroll: true, preserveState: true },
+            );
+            return;
+        }
+
         router.get(
             shopIndex(),
             {
@@ -40,32 +61,46 @@ export function AppSidebarHeader({
 
     return (
         <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-2 border-b border-sidebar-border/50 bg-background px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4">
-            <div className="flex min-w-0 flex-1 items-center gap-2">
+            <div className="flex min-w-0 items-center gap-2 sm:flex-1">
                 <SidebarTrigger className="-ml-1" />
-                <Breadcrumbs breadcrumbs={breadcrumbs} />
+                <div className="hidden min-w-0 sm:block">
+                    <Breadcrumbs breadcrumbs={breadcrumbs} />
+                </div>
             </div>
-            <div className="hidden flex-1 items-center justify-center gap-2 md:flex">
+            <div className="flex min-w-0 flex-1 items-center justify-center gap-2">
                 <div className="relative w-full max-w-md lg:max-w-xl">
                     <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && submitSearch()}
-                        placeholder="Search products..."
-                        aria-label="Search products"
+                        placeholder={
+                            isCartPage
+                                ? 'Search your cart...'
+                                : isOrdersPage
+                                  ? 'Search your orders...'
+                                  : 'Search products...'
+                        }
+                        aria-label={
+                            isCartPage
+                                ? 'Search your cart'
+                                : isOrdersPage
+                                  ? 'Search your orders'
+                                  : 'Search products'
+                        }
                         className="h-9 pl-9"
                     />
                 </div>
                 <Button
                     variant="outline"
                     size="sm"
-                    className="h-9 shrink-0"
+                    className="hidden h-9 shrink-0 sm:inline-flex"
                     onClick={submitSearch}
                 >
                     Search
                 </Button>
             </div>
-            <div className="flex flex-1 items-center justify-end">
+            <div className="flex items-center justify-end sm:flex-1">
                 <Button
                     asChild
                     size="sm"
