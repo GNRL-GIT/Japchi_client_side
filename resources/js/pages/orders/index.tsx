@@ -14,18 +14,23 @@ import { Badge } from '@/components/ui/badge';
 import { index as ordersIndex } from '@/routes/orders';
 
 type OrderItem = {
-    id: number;
-    product_id: number;
+    id: string;
+    product_id: string;
     product: { name: string; image?: string | null } | null;
     quantity: number;
     price: number;
+    options: { id: string; name: string }[];
 };
 
 type Order = {
-    id: number;
+    id: string;
+    order_no: string;
     status: string;
+    order_type: string;
     total: number;
-    shipping_address: string;
+    notes: string | null;
+    courier_name: string | null;
+    courier_ref: string | null;
     created_at: string;
     items: OrderItem[];
 };
@@ -33,6 +38,7 @@ type Order = {
 type PageProps = {
     orders: Order[];
     filters?: { search?: string | null };
+    status?: string;
 };
 
 const statusConfig: Record<
@@ -43,23 +49,31 @@ const statusConfig: Record<
         icon: React.ElementType;
     }
 > = {
-    pending: { label: 'Pending', variant: 'outline', icon: Clock },
-    processing: { label: 'Processing', variant: 'secondary', icon: Truck },
+    awaiting_payment: {
+        label: 'Awaiting payment',
+        variant: 'outline',
+        icon: Clock,
+    },
+    paid: { label: 'Paid', variant: 'secondary', icon: CheckCircle2 },
+    preparing: { label: 'Preparing', variant: 'secondary', icon: Truck },
+    ready: {
+        label: 'Ready for pickup',
+        variant: 'default',
+        icon: CheckCircle2,
+    },
     completed: { label: 'Completed', variant: 'default', icon: CheckCircle2 },
     cancelled: { label: 'Cancelled', variant: 'destructive', icon: XCircle },
+    voided: { label: 'Voided', variant: 'destructive', icon: XCircle },
 };
 
-export default function OrdersIndex({ orders, filters }: PageProps) {
+export default function OrdersIndex({ orders, filters, status }: PageProps) {
     const search = filters?.search?.trim() ?? '';
     const totalSpent = orders
         .filter((o) => o.status === 'completed')
         .reduce((sum, o) => sum + Number(o.total), 0);
 
-    const reorder = (id: number) => {
-        const order = orders.find((o) => o.id === id);
-        return router.post('/orders', {
-            shipping_address: order?.shipping_address ?? '',
-        });
+    const reorder = (id: string) => {
+        router.post(`/orders/${id}/reorder`);
     };
 
     return (
@@ -67,6 +81,14 @@ export default function OrdersIndex({ orders, filters }: PageProps) {
             <Head title="My Orders" />
 
             <div className="mx-auto max-w-7xl space-y-8 p-6">
+                {status && (
+                    <div
+                        role="status"
+                        className="rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-800"
+                    >
+                        {status}
+                    </div>
+                )}
                 <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
@@ -110,7 +132,9 @@ export default function OrdersIndex({ orders, filters }: PageProps) {
                     <StatCard
                         title="Pending"
                         value={
-                            orders.filter((o) => o.status === 'pending').length
+                            orders.filter(
+                                (o) => o.status === 'awaiting_payment',
+                            ).length
                         }
                         icon={Clock}
                         description="Awaiting processing"
@@ -224,9 +248,9 @@ function OrderCard({
     reorder,
 }: {
     order: Order;
-    reorder: (id: number) => void;
+    reorder: (id: string) => void;
 }) {
-    const config = statusConfig[order.status] ?? statusConfig.pending;
+    const config = statusConfig[order.status] ?? statusConfig.awaiting_payment;
     const Icon = config.icon;
 
     return (
@@ -238,7 +262,7 @@ function OrderCard({
                     </div>
                     <div>
                         <CardTitle className="text-sm font-semibold">
-                            {order.id}
+                            Order #{order.order_no}
                         </CardTitle>
                         <p className="text-xs text-muted-foreground">
                             {new Date(order.created_at).toLocaleDateString(
@@ -285,6 +309,13 @@ function OrderCard({
                                 <p className="text-xs text-muted-foreground">
                                     x {item.quantity}
                                 </p>
+                                {item.options.length > 0 && (
+                                    <p className="text-xs text-muted-foreground">
+                                        {item.options
+                                            .map((option) => option.name)
+                                            .join(', ')}
+                                    </p>
+                                )}
                             </div>
                             <span className="text-right text-sm font-medium">
                                 ₱{(item.price * item.quantity).toFixed(2)}
@@ -295,12 +326,23 @@ function OrderCard({
 
                 <div className="mt-4 flex items-center justify-between gap-4 rounded-lg bg-muted p-3 text-sm">
                     <div className="flex flex-col gap-1">
-                        <p className="text-muted-foreground">
-                            Shipping address
+                        <p className="text-muted-foreground">Order type</p>
+                        <p className="font-medium">
+                            {order.order_type.replaceAll('_', ' ')}
                         </p>
-                        <p className="max-w-xs truncate font-medium">
-                            {order.shipping_address}
-                        </p>
+                        {order.courier_name && (
+                            <p className="text-xs text-muted-foreground">
+                                Courier: {order.courier_name}
+                                {order.courier_ref
+                                    ? ` · ${order.courier_ref}`
+                                    : ''}
+                            </p>
+                        )}
+                        {order.notes && (
+                            <p className="text-xs text-muted-foreground">
+                                Note: {order.notes}
+                            </p>
+                        )}
                     </div>
                     <div className="flex flex-col items-end gap-1">
                         <p className="text-muted-foreground">Total</p>
@@ -315,16 +357,26 @@ function OrderCard({
                         size="sm"
                         variant="outline"
                         onClick={() => reorder(order.id)}
-                        disabled={order.status === 'cancelled'}
+                        disabled={
+                            order.status === 'cancelled' ||
+                            order.status === 'voided'
+                        }
                         className="border-green-200 text-green-700 hover:bg-green-50 disabled:opacity-50"
                     >
                         <RefreshCw className="mr-2 h-3 w-3" />
                         Reorder
                     </Button>
-                    {order.status !== 'cancelled' && (
-                        <span className="ml-auto text-xs text-muted-foreground">
-                            Reuse this order&apos;s address
-                        </span>
+                    {order.status === 'awaiting_payment' && (
+                        <Button
+                            size="sm"
+                            variant="destructive"
+                            className="ml-auto"
+                            onClick={() =>
+                                router.post(`/orders/${order.id}/cancel`)
+                            }
+                        >
+                            Cancel order
+                        </Button>
                     )}
                 </div>
             </CardContent>

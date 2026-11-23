@@ -5,29 +5,28 @@ import { update as cartUpdate } from '@/routes/cart';
 import { destroy as cartDestroy } from '@/routes/cart';
 
 type CartItem = {
-    id: number;
-    product_id: number;
+    id: string;
+    product_id: string;
     quantity: number;
     product: {
-        id: number;
+        id: string;
         name: string;
         price: number;
         image: string | null;
     };
+    options: { id: string; name: string; price_delta: number }[];
+    unit_price: number;
 };
 
 type PageProps = {
-    cart: { items: CartItem[] } | null;
+    cart: { items: CartItem[]; subtotal: number } | null;
     filters?: { search?: string | null };
 };
 
 export default function CartIndex({ cart, filters }: PageProps) {
     const items = cart?.items ?? [];
     const search = filters?.search?.trim() ?? '';
-    const total = items.reduce(
-        (s: number, i: any) => s + Number(i.product.price) * i.quantity,
-        0,
-    );
+    const total = cart?.subtotal ?? 0;
 
     return (
         <>
@@ -106,9 +105,19 @@ export default function CartIndex({ cart, filters }: PageProps) {
                                                 <p className="text-sm text-muted-foreground">
                                                     ₱
                                                     {Number(
-                                                        item.product.price,
+                                                        item.unit_price,
                                                     ).toFixed(2)}
                                                 </p>
+                                                {item.options.length > 0 && (
+                                                    <p className="text-xs text-muted-foreground">
+                                                        {item.options
+                                                            .map(
+                                                                (option) =>
+                                                                    option.name,
+                                                            )
+                                                            .join(', ')}
+                                                    </p>
+                                                )}
                                             </div>
                                             <div className="col-span-3 flex items-center gap-2">
                                                 <button
@@ -185,9 +194,8 @@ export default function CartIndex({ cart, filters }: PageProps) {
                                                 <p className="font-medium text-foreground">
                                                     ₱
                                                     {(
-                                                        Number(
-                                                            item.product.price,
-                                                        ) * item.quantity
+                                                        item.unit_price *
+                                                        item.quantity
                                                     ).toFixed(2)}
                                                 </p>
                                                 <button

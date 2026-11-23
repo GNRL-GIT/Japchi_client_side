@@ -4,6 +4,7 @@ namespace Tests\Feature\Settings;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class ProfileUpdateTest extends TestCase
@@ -21,15 +22,26 @@ class ProfileUpdateTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_profile_information_can_be_updated()
+    public function test_profile_name_is_updated_in_supabase_and_the_local_shadow_user()
     {
         $user = User::factory()->create();
+        $supabaseId = '44444444-4444-4444-8444-444444444444';
+        $this->authenticateWithSupabase($user, $supabaseId);
+        Http::fake([
+            'https://supabase.test/rest/v1/rpc/update_customer_profile' => Http::response(null, 204),
+            'https://supabase.test/rest/v1/profiles*' => Http::response([[
+                'id' => $supabaseId,
+                'full_name' => 'Test User',
+                'role' => 'customer',
+                'is_active' => true,
+                'branch_id' => null,
+            ]]),
+        ]);
 
         $response = $this
-            ->actingAs($user)
+            ->from(route('profile.edit'))
             ->patch(route('profile.update'), [
                 'name' => 'Test User',
-                'email' => 'test@example.com',
             ]);
 
         $response
@@ -39,61 +51,52 @@ class ProfileUpdateTest extends TestCase
         $user->refresh();
 
         $this->assertSame('Test User', $user->name);
-        $this->assertSame('test@example.com', $user->email);
-        $this->assertNull($user->email_verified_at);
+        Http::assertSent(fn ($request) => $request->method() === 'POST'
+            && $request->url() === 'https://supabase.test/rest/v1/rpc/update_customer_profile'
+            && $request['p_full_name'] === 'Test User');
     }
 
-    public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged()
+    public function test_supabase_profile_update_errors_are_reported()
     {
         $user = User::factory()->create();
+        $this->authenticateWithSupabase($user, '55555555-5555-4555-8555-555555555555');
+        Http::fake([
+            'https://supabase.test/rest/v1/rpc/update_customer_profile' => Http::response([
+                'message' => 'Customer profile unavailable',
+            ], 400),
+        ]);
 
         $response = $this
-            ->actingAs($user)
+            ->from(route('profile.edit'))
             ->patch(route('profile.update'), [
                 'name' => 'Test User',
-                'email' => $user->email,
             ]);
 
         $response
-            ->assertSessionHasNoErrors()
+            ->assertSessionHasErrors(['name' => 'Customer profile unavailable'])
             ->assertRedirect(route('profile.edit'));
 
-        $this->assertNotNull($user->refresh()->email_verified_at);
+        $this->assertSame($user->name, $user->fresh()->name);
     }
 
-    public function test_user_can_delete_their_account()
+    private function authenticateWithSupabase(User $user, string $supabaseId): void
     {
-        $user = User::factory()->create();
-
-        $response = $this
-            ->actingAs($user)
-            ->delete(route('profile.destroy'), [
-                'password' => 'password',
-            ]);
-
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect(route('home'));
-
-        $this->assertGuest();
-        $this->assertNull($user->fresh());
-    }
-
-    public function test_correct_password_must_be_provided_to_delete_account()
-    {
-        $user = User::factory()->create();
-
-        $response = $this
-            ->actingAs($user)
-            ->from(route('profile.edit'))
-            ->delete(route('profile.destroy'), [
-                'password' => 'wrong-password',
-            ]);
-
-        $response
-            ->assertSessionHasErrors('password')
-            ->assertRedirect(route('profile.edit'));
-
-        $this->assertNotNull($user->fresh());
+        $user->forceFill(['supabase_id' => $supabaseId])->save();
+        config([
+            'services.supabase.url' => 'https://supabase.test',
+            'services.supabase.publishable_key' => 'sb_publishable_test',
+        ]);
+        $this->actingAs($user)->withSession([
+            'supabase' => [
+                'access_token' => 'customer-access-token',
+                'refresh_token' => 'customer-refresh-token',
+                'expires_at' => time() + 3600,
+                'user' => [
+                    'id' => $supabaseId,
+                    'email' => $user->email,
+                    'name' => $user->name,
+                ],
+            ],
+        ]);
     }
 }

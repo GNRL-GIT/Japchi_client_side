@@ -1,9 +1,9 @@
-import { Form, Head, Link } from "@inertiajs/react";
-import InputError from "@/components/input-error";
-import PasswordInput from "@/components/password-input";
-import TextLink from "@/components/text-link";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Form, Head, Link } from '@inertiajs/react';
+import InputError from '@/components/input-error';
+import PasswordInput from '@/components/password-input';
+import TextLink from '@/components/text-link';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
     Card,
     CardContent,
@@ -11,38 +11,29 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Spinner } from "@/components/ui/spinner";
-import { Mail, Lock, ShoppingBag, CheckCircle2 } from "lucide-react";
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
+import { Mail, Lock, ShoppingBag, CheckCircle2 } from 'lucide-react';
 /* @chisel-registration */
-import { register } from "@/routes";
+import { register } from '@/routes';
 /* @end-chisel-registration */
-import { store } from "@/routes/login";
-import { request } from "@/routes/password";
-/* @chisel-passkeys */
-import PasskeyVerify from "@/components/passkey-verify";
-/* @end-chisel-passkeys */
+import { store } from '@/routes/login';
 
 type Props = {
     status?: string;
-    canResetPassword: boolean;
 };
 
-export default function Login({ status, canResetPassword }: Props) {
+export default function Login({ status }: Props) {
     return (
         <>
             <Head title="Log in - Japchi" />
 
-            {/* @chisel-passkeys */}
-            <PasskeyVerify />
-            {/* @end-chisel-passkeys */}
-
-            <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center  px-6 py-12 bg-transparent">
+            <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-transparent px-6 py-12">
                 <Card className="w-full max-w-md p-4">
                     <CardHeader className="px-0 py-0 text-center">
-                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mb-4">
+                        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
                             <ShoppingBag className="h-6 w-6" />
                         </div>
                         <CardTitle className="text-3xl font-bold tracking-tight">
@@ -56,13 +47,13 @@ export default function Login({ status, canResetPassword }: Props) {
                     <CardContent className="px-0 py-0">
                         <Form
                             {...store.form()}
-                            resetOnSuccess={["password"]}
+                            resetOnSuccess={['password']}
                             className="space-y-4"
                         >
                             {({ processing, errors }) => (
                                 <>
                                     {status && (
-                                        <div className="flex items-center gap-2 rounded-lg bg-green-50 p-3 text-green-700 text-sm border border-green-100">
+                                        <div className="flex items-center gap-2 rounded-lg border border-green-100 bg-green-50 p-3 text-sm text-green-700">
                                             <CheckCircle2 className="h-4 w-4" />
                                             {status}
                                         </div>
@@ -73,7 +64,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                             Email address
                                         </Label>
                                         <div className="relative">
-                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <Input
                                                 id="email"
                                                 type="email"
@@ -93,17 +84,9 @@ export default function Login({ status, canResetPassword }: Props) {
                                             <Label htmlFor="password">
                                                 Password
                                             </Label>
-                                            {canResetPassword && (
-                                                <TextLink
-                                                    href={request()}
-                                                    className="text-xs text-green-600 hover:text-green-700 transition-colors"
-                                                >
-                                                    Forgot your password?
-                                                </TextLink>
-                                            )}
                                         </div>
                                         <div className="relative">
-                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <PasswordInput
                                                 id="password"
                                                 name="password"
@@ -131,7 +114,7 @@ export default function Login({ status, canResetPassword }: Props) {
 
                                     <Button
                                         type="submit"
-                                        className="w-full py-3 text-lg font-medium bg-green-600 text-white shadow-lg shadow-green-500/25 hover:bg-green-700 transition-colors disabled:opacity-70"
+                                        className="w-full bg-green-600 py-3 text-lg font-medium text-white shadow-lg shadow-green-500/25 transition-colors hover:bg-green-700 disabled:opacity-70"
                                         disabled={processing}
                                         data-test="login-button"
                                     >
@@ -145,9 +128,9 @@ export default function Login({ status, canResetPassword }: Props) {
                         </Form>
                     </CardContent>
 
-                    <CardFooter className="px-0 py-0 border-t-0">
-                        <div className="text-center text-sm text-muted-foreground mt-6">
-                            Don't have an account?{" "}
+                    <CardFooter className="border-t-0 px-0 py-0">
+                        <div className="mt-6 text-center text-sm text-muted-foreground">
+                            Don't have an account?{' '}
                             <TextLink
                                 href={register()}
                                 className="font-medium text-green-600 hover:text-green-700"
@@ -163,6 +146,6 @@ export default function Login({ status, canResetPassword }: Props) {
 }
 
 Login.layout = {
-    title: "Log in to your account",
-    description: "Enter your email and password below to log in",
+    title: 'Log in to your account',
+    description: 'Enter your email and password below to log in',
 };

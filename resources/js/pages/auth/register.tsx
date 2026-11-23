@@ -3,17 +3,18 @@ import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import {
-    User,
-    Mail,
-    Lock,
-    ShoppingBag,
-    CheckCircle2,
-} from 'lucide-react';
+import { User, Mail, Lock, ShoppingBag, CheckCircle2 } from 'lucide-react';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
 
@@ -26,22 +27,28 @@ export default function Register({ passwordRules }: Props) {
         <>
             <Head title="Create account - Japchi" />
 
-            <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-muted/50 px-6 py-12  ">
+            <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-muted/50 px-6 py-12">
                 <Card className="w-full max-w-md p-4">
                     <CardHeader className="px-0 py-0 text-center">
-                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mb-4">
+                        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
                             <ShoppingBag className="h-6 w-6" />
                         </div>
-                        <CardTitle className="text-3xl font-bold tracking-tight">Create an account</CardTitle>
+                        <CardTitle className="text-3xl font-bold tracking-tight">
+                            Create an account
+                        </CardTitle>
                         <CardDescription>
-                            Join Japchi and order your favorite ramen, dimsum, and drinks.
+                            Join Japchi and order your favorite ramen, dimsum,
+                            and drinks.
                         </CardDescription>
                     </CardHeader>
 
                     <CardContent className="px-0 py-0">
                         <Form
                             {...store.form()}
-                            resetOnSuccess={['password', 'password_confirmation']}
+                            resetOnSuccess={[
+                                'password',
+                                'password_confirmation',
+                            ]}
                             disableWhileProcessing
                             className="space-y-4"
                         >
@@ -50,9 +57,7 @@ export default function Register({ passwordRules }: Props) {
                                     <div className="grid gap-2">
                                         <Label htmlFor="name">Full name</Label>
                                         <div className="relative">
-                                            <User
-                                                className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-                                            />
+                                            <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <Input
                                                 id="name"
                                                 type="text"
@@ -71,11 +76,11 @@ export default function Register({ passwordRules }: Props) {
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="email">Email address</Label>
+                                        <Label htmlFor="email">
+                                            Email address
+                                        </Label>
                                         <div className="relative">
-                                            <Mail
-                                                className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-                                            />
+                                            <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <Input
                                                 id="email"
                                                 type="email"
@@ -90,11 +95,11 @@ export default function Register({ passwordRules }: Props) {
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="password">Password</Label>
+                                        <Label htmlFor="password">
+                                            Password
+                                        </Label>
                                         <div className="relative">
-                                            <Lock
-                                                className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-                                            />
+                                            <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <PasswordInput
                                                 id="password"
                                                 required
@@ -113,9 +118,7 @@ export default function Register({ passwordRules }: Props) {
                                             Confirm password
                                         </Label>
                                         <div className="relative">
-                                            <Lock
-                                                className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-                                            />
+                                            <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <PasswordInput
                                                 id="password_confirmation"
                                                 required
@@ -127,16 +130,43 @@ export default function Register({ passwordRules }: Props) {
                                             />
                                         </div>
                                         <InputError
-                                            message={errors.password_confirmation}
+                                            message={
+                                                errors.password_confirmation
+                                            }
                                         />
                                     </div>
 
+                                    <div className="flex items-start gap-3">
+                                        <input
+                                            type="checkbox"
+                                            id="privacy_consent"
+                                            name="privacy_consent"
+                                            required
+                                            value="1"
+                                            className="mt-1 h-4 w-4 accent-green-600"
+                                        />
+                                        <Label
+                                            htmlFor="privacy_consent"
+                                            className="text-sm leading-5 text-muted-foreground"
+                                        >
+                                            I agree that JapChi may use my name
+                                            and email to process my orders, as
+                                            described in the Data Privacy
+                                            notice.
+                                        </Label>
+                                    </div>
+                                    <InputError
+                                        message={errors.privacy_consent}
+                                    />
+
                                     <Button
                                         type="submit"
-                                        className="w-full py-3 text-lg font-medium bg-green-600 text-white shadow-lg shadow-green-500/25 hover:bg-green-700 transition-colors disabled:opacity-70"
+                                        className="w-full bg-green-600 py-3 text-lg font-medium text-white shadow-lg shadow-green-500/25 transition-colors hover:bg-green-700 disabled:opacity-70"
                                         data-test="register-user-button"
                                     >
-                                        {processing && <Spinner className="mr-2 h-4 w-4" />}
+                                        {processing && (
+                                            <Spinner className="mr-2 h-4 w-4" />
+                                        )}
                                         Create account
                                     </Button>
                                 </>
@@ -144,10 +174,13 @@ export default function Register({ passwordRules }: Props) {
                         </Form>
                     </CardContent>
 
-                    <CardFooter className="px-0 py-0 border-t-0">
-                        <div className="text-center text-sm text-muted-foreground mt-6">
+                    <CardFooter className="border-t-0 px-0 py-0">
+                        <div className="mt-6 text-center text-sm text-muted-foreground">
                             Already have an account?{' '}
-                            <TextLink href={login()} className="font-medium text-green-600 hover:text-green-700">
+                            <TextLink
+                                href={login()}
+                                className="font-medium text-green-600 hover:text-green-700"
+                            >
                                 Log in
                             </TextLink>
                         </div>

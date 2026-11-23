@@ -15,16 +15,16 @@ import { index as shopIndex } from '@/routes/shop';
 import { store as cartStore } from '@/routes/cart';
 
 type Product = {
-    id: number;
+    id: string;
     name: string;
     slug: string;
     description: string;
     price: number;
-    stock: number;
-    unit: string;
     image: string | null;
     is_active: boolean;
-    category: { id: number; name: string; slug: string } | null;
+    available: boolean;
+    groups: { id: string; min_select: number; max_select: number }[];
+    category: { id: string; name: string; slug: string } | null;
 };
 
 type PageProps = {
@@ -39,14 +39,16 @@ type PageProps = {
         prev_page_url: string | null;
         next_page_url: string | null;
     };
-    categories: { id: number; name: string; slug: string }[];
+    categories: { id: string; name: string; slug: string }[];
     filters: { search?: string; category?: string };
+    store: { is_open: boolean; closed_message: string };
 };
 
 export default function ShopIndex({
     products,
     categories,
     filters,
+    store,
 }: PageProps) {
     const [activeCategory, setActiveCategory] = useState(
         filters.category ?? '',
@@ -63,6 +65,14 @@ export default function ShopIndex({
             <Head title="Shop - Japchi" />
 
             <div className="mx-auto max-w-7xl space-y-10 p-6">
+                {!store.is_open && (
+                    <div
+                        role="status"
+                        className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-900"
+                    >
+                        {store.closed_message}
+                    </div>
+                )}
                 <div>
                     <h1 className="mb-2 text-4xl font-bold tracking-tight text-foreground">
                         Our Menu
@@ -190,7 +200,11 @@ export default function ShopIndex({
                 ) : (
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {products.data.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                                storeOpen={store.is_open}
+                            />
                         ))}
                     </div>
                 )}
@@ -199,9 +213,14 @@ export default function ShopIndex({
     );
 }
 
-function ProductCard({ product }: { product: Product }) {
-    const isLowStock = product.stock <= 5;
-    const isOutOfStock = product.stock === 0;
+function ProductCard({
+    product,
+    storeOpen,
+}: {
+    product: Product;
+    storeOpen: boolean;
+}) {
+    const isOutOfStock = !product.available;
 
     return (
         <Card className="group flex flex-col overflow-hidden border border-border/50 transition-shadow duration-300 hover:shadow-xl">
@@ -227,16 +246,6 @@ function ProductCard({ product }: { product: Product }) {
                         </Badge>
                     </div>
                 )}
-                {isLowStock && !isOutOfStock && (
-                    <div className="absolute top-3 right-3 z-20">
-                        <Badge
-                            variant="outline"
-                            className="border-green-200 bg-green-50 text-xs text-green-700 uppercase"
-                        >
-                            Low Stock ({product.stock})
-                        </Badge>
-                    </div>
-                )}
             </div>
 
             <CardContent className="px-5 pb-4">
@@ -250,16 +259,13 @@ function ProductCard({ product }: { product: Product }) {
                     <span className="text-xl font-bold text-foreground">
                         ₱{Number(product.price).toFixed(2)}
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                        /{product.unit}
-                    </span>
                 </div>
             </CardContent>
 
             <CardFooter className="px-5 pt-0">
-                {isOutOfStock ? (
+                {isOutOfStock || !storeOpen ? (
                     <Button variant="outline" className="w-full" disabled>
-                        Out of Stock
+                        {isOutOfStock ? 'Unavailable' : 'Store closed'}
                     </Button>
                 ) : (
                     <div className="grid grid-cols-2 gap-3">
@@ -269,17 +275,28 @@ function ProductCard({ product }: { product: Product }) {
                         >
                             View <ArrowRight className="h-3 w-3" />
                         </Link>
-                        <button
-                            onClick={() =>
-                                router.post(cartStore(), {
-                                    product_id: product.id,
-                                    quantity: 1,
-                                })
-                            }
-                            className="rounded-lg bg-green-600 px-3 py-2.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-green-700 disabled:opacity-50"
-                        >
-                            <Plus className="h-3 w-3" /> Add
-                        </button>
+                        {product.groups.length > 0 ? (
+                            <Link
+                                href={`/shop/${product.id}`}
+                                className="rounded-lg bg-green-600 px-3 py-2.5 text-center text-xs font-medium text-white shadow-sm transition-colors hover:bg-green-700"
+                            >
+                                Choose options
+                            </Link>
+                        ) : (
+                            <button
+                                onClick={() =>
+                                    router.post(cartStore(), {
+                                        product_id: product.id,
+                                        quantity: 1,
+                                        modifier_ids: [],
+                                    })
+                                }
+                                disabled={!storeOpen}
+                                className="rounded-lg bg-green-600 px-3 py-2.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-green-700 disabled:opacity-50"
+                            >
+                                <Plus className="h-3 w-3" /> Add
+                            </button>
+                        )}
                     </div>
                 )}
             </CardFooter>
